@@ -1,3 +1,62 @@
-baseURL = "http://example.org/"
+baseurl = "https://hashbang.gr/"
+title = "hashbang"
+theme = "ghostwriter"
 languageCode = "en-us"
-title = "My New Hugo Site"
+copyright = "giannoug"
+googleAnalytics = "UA-2171776-36"
+pygmentsUseClasses = true
+pygmentsCodefences = true
+
+[markup]
+
+  [markup.highlight]
+  codeFences = true
+  guessSyntax = false
+  hl_Lines = ""
+  lineNoStart = 1.0
+  lineNos = false
+  lineNumbersInTable = true
+  noClasses = true
+  tabWidth = 2.0
+
+[privacy]
+
+  [privacy.disqus]
+  disable = true
+
+  [privacy.googleAnalytics]
+  anonymizeIP = true
+  respectDoNotTrack = true
+  useSessionStorage = false
+
+[author]
+name = "giannoug"
+
+[taxonomies]
+tag = "tags"
+
+[params]
+mainSections = [
+  "post"
+]
+intro = true
+headline = "hashbang"
+description = "Thoughts, stories and ideas."
+facebook = "https://www.facebook.com/omgitsgiannoug"
+opengraph = false
+shareTwitter = false
+shareFacebook = false
+shareGooglePlus = false
+shareLinkedIn = false
+dateFormat = "Mon, Jan 2, 2006"
+exponeaJsUrl = ""
+exponeaTarget = ""
+exponeaToken = ""
+exponeaTrackVisits = false
+readingTime = true
+readingTimeText = "Reading time:"
+fathomUrl = ""
+fathomSiteId = ""
+
+[permalinks]
+post = "/:filename/"
