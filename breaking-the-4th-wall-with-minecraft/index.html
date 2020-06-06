@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>Breaking the fourth wall with Minecraft &#183; giannoug</title><meta name=description content="Update 23/11/2015 - I&rsquo;ve got many requests about the WiFi bulbs. You can find them on dx.com. Enjoy!
+ Recently I started playing Minecraft, again. I find vanilla Minecraft somewhat boring, so I always look out for modpacks. After searching for new modpacks, I stumpled upon FTB Horizons: Daybreaker. Looking at the included mods list, OpenComputers caught my eye.
+As the name suggests, OpenComputers adds computers to Minecraft. Real computers!"><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.68.3"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet href=https://hashbang.gr/dist/site.css><link rel=stylesheet href=https://hashbang.gr/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous></head><body><script type=application/javascript>var dnt=(navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack);var doNotTrack=(dnt=="1"||dnt=="yes");if(!doNotTrack){(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-2171776-36','auto');ga('set','anonymizeIp',true);ga('send','pageview');}</script><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a title=hashbang href=https://hashbang.gr/>hashbang</a></h1><a class=button-square href=https://hashbang.gr/index.xml><i class="fa fa-rss"></i></a><a class="button-square button-social hint--top" data-hint=Facebook title=Facebook href=https://www.facebook.com/omgitsgiannoug rel=me><i class="fa fa-facebook"></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Breaking the fourth wall with Minecraft</h1><p class=post-date><span>Published <time datetime=2015-11-21 itemprop=datePublished>Sat, Nov 21, 2015</time></span>
+<span>by</span>
+<span itemscope itemprop=author itemtype=https://schema.org/Person><span itemprop=name><a href=# itemprop=url rel=author>giannoug</a></span></span></p><p class="post-reading post-line"><span>Reading time: 4 min</span></p></header><div class="post-content clearfix" itemprop=articleBody><img class=post-featured-image src=/images/2015/11/minecraft-open-computers-mod.jpg><blockquote><p><strong>Update 23/11/2015</strong> - I&rsquo;ve got many requests about the WiFi bulbs. <a href="http://www.dx.com/p/e27-7w-550lm-rgbw-15-led-smart-phone-wi-fi-music-control-color-temperature-light-bulb-855-240v-280632?Utm_rid=30344541&Utm_source=affiliate">You can find them on dx.com.</a> Enjoy!</p></blockquote><p>Recently I started playing Minecraft, again. I find vanilla Minecraft somewhat boring, so I always look out for modpacks. After searching for new modpacks, I stumpled upon FTB Horizons: Daybreaker. Looking at the included mods list, OpenComputers caught my eye.</p><p>As the name suggests, OpenComputers adds computers to Minecraft. Real computers! They are highly modular too. You can add peripherals, from monitors to keyboards and expansion cards that add capabilities such as graphics and network. They can also be programmed in Lua, in-game. Another type of card also exists, the Internet card which, as you can imagine, can communicate with the real-life Internet. Awesome.</p><p>So what can we do in ~1 hour of spare time? I have a couple of WiFi-enabled bulbs near me, wouldn&rsquo;t it be nice to be able to control them using Minecraft? My WiFi bulbs are some unknown, eBay sourced devices that use a crappy mobile app for control. My friend Thomas had reverse-engineered the protocol and I am able to control their color and state though TCP on port 5577. I have everything that I need, so what now?</p><h2 id=getting-our-hands-dirty>Getting our hands dirty</h2><p>First of all, I fired up Minecraft. Next, I created a new Minecraft world and entered the game. I set myself to creative mode, meaning that I could spawn into the game whatever I want and then built an OpenComputers computer. There are many tutorials out there, but it took me some time to figure out how they work. After some troubleshooting I had a computer up and running and I could open TCP connections to the real world!</p><p>The protocol used by the bulbs is quite simple, one header byte, three additional bytes to define the RGB color, a byte to define the white brightness (the bulb is RGBW), one byte to set the mode between RGB and white and a footer byte. Simple enough!</p><pre><code>0x56 RED GREEN BLUE WHITE MODE 0xAA
+</code></pre><p>Vanilla Minecraft has redstone, the equivalent of electricity in our world. By default, many different blocks are supported such as levers, pistons, comparators, etc. People have created really complicated contraptions using redstone, such as a real CPU. OpenComputer works with redstone, so we can easily read the binary state of a Minecraft lever, either ON or OFF and toggle the WHITE byte to turn on or off the WiFi bulb. This is the computer I build in-game. It has 6 monitors that get combined to a big one, a disk drive and a redstone lever connected to the right side with redstone dust.</p><p><img src=/images/2015/11/breaking-the-4th-wall-with-minecraft.jpg alt="OpenComputers computer"></p><h2 id=bringing-it-all-together>Bringing it all together</h2><p>So, we have the computer, a way to control the computer and input signals. We also have a way and protocol to talk to the bulb. The last part of the puzzle is the program that runs on the computer and brings everything to life. First of all, I spawned a disk in Minecraft. By putting it inside a disk drive, OpenComputers creates a folder with a unique ID in the game&rsquo;s files. This way I can add, edit and delete files from my computer to the computer in Minecraft. I used Sublime as the editor, I find it very tedious having to use the computer in-game to write code. After some researching and troubleshooting, I came up with the following script.</p><pre><code>local event = require('event')
+local net = require('internet')
+
+local myEventHandlers = {}
+local running = true
+
+local con = net.open('192.168.1.110', 5577)
+
+function myEventHandlers.key_up(address, char, code, playerName)
+
+  if (char == 'q') then
+    running = false
+    print('Goodbye ' .. playerName .. '!')
+  end
+
+end
+
+function myEventHandlers.redstone_changed(_, address, side)
+
+  local brightness = 0xff;
+
+  if side &gt; 0 then
+    brightness = 0xff
+  else
+    brightness = 0x00
+  end
+
+  print('Sending ' .. brightness .. ' to lamp...')
+
+  con:write(string.char(0x56))
+  con:write(string.char(0x00))
+  con:write(string.char(0x00))
+  con:write(string.char(0x00))
+  con:write(string.char(brightness))
+  con:write(string.char(0x0f))
+  con:write(string.char(0xaa))
+
+  con:flush()
+
+end
+
+function handleEvent(eventID, ...)
+
+  local event = myEventHandlers[eventID]
+
+  if (event) then
+    event(...)
+  end
+
+end
+
+if con then
+  print('Connected to the bulb!')
+end
+
+while running do
+  handleEvent(event.pull())
+end
+</code></pre><p>The Lua program binds to two events on execution, <code>key_up</code> and <code>redstone_changed</code>. The first one fires when a key is pressed while the program runs while the latter runs when a redstone event is triggered on the computer. Now that I have my main event loop, I was able to implement the simple logic.</p><p><img src=http://i.imgur.com/UGfoHPM.gif alt="OpenComputers controls WiFi lamp"></p><p>First of all, when the <code>q</code> button is pressed, the program exits. When a redstone event occurs, the program maps the lever&rsquo;s value to either <code>0x00</code> or <code>0xFF</code>, which maps to on and off for the WiFi lamp. The packet is sent down the pipe and lamp reacts accordingly! Lastly, the TCP connection is opened when the program starts. Simple, clean and it works!</p></div><footer class="post-footer clearfix"><div class=share></div></footer></article></div></div></div><footer class=footer><div class=container><div class=site-title-wrapper><h1 class=site-title><a title=hashbang href=https://hashbang.gr/>hashbang</a></h1><a class="button-square button-jump-top js-jump-top" href=#><i class="fa fa-angle-up"></i></a></div><p class=footer-copyright><span>&copy; 2016 / Powered by <a href=https://gohugo.io/>Hugo</a></span></p><p class=footer-copyright><span><a href=https://github.com/roryg/ghostwriter>Ghostwriter theme</a> By <a href=http://jollygoodthemes.com>JollyGoodThemes</a></span>
+<span>/ <a href=https://github.com/jbub/ghostwriter>Ported</a> to Hugo By <a href=https://github.com/jbub>jbub</a></span></p></div></footer><script src=https://hashbang.gr/js/jquery-1.11.3.min.js></script><script src=https://hashbang.gr/js/jquery.fitvids.js></script><script src=https://hashbang.gr/js/scripts.js></script></body></html>
